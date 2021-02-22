@@ -9,11 +9,11 @@ class ListAppointments extends Component {
               {this.props.appointments.map(item => (
                 <div className="pet-item col media py-3" key={item.aptID}>
                   <div className="mr-3">
-                    <button className="pet-delete btn btn-sm btn-danger">
-                        <FaTimes />
-                    </button>
+                    <button className="pet-delete btn btn-sm btn-danger" 
+                    onClick={()=> this.props.deleteAppointment(item)}> 
+                        <FaTimes />                      
+                    </button>                  
                   </div>
-      
                   <div className="pet-info media-body">
                     <div className="pet-head d-flex">
                       <span className="pet-name">{item.petName}</span>
@@ -21,10 +21,10 @@ class ListAppointments extends Component {
                           <Moment 
                             date={item.aptDate}
                             parse="YYYY-MM-dd hh:mm"
-                            format= "MMMM Do YYYY, h:mm:ss a"
+                            format= "MMMM Do YYYY – h:mm:ss a"
                           />
                           
-                          </span>
+                        </span>
                     </div>
       
                     <div className="owner-name">
