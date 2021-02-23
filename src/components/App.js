@@ -6,6 +6,7 @@ import SearchAppointments from './SearchAppointments';
 import ListAppointments from './ListAppointments';
 
 import { without } from "lodash";
+import { FaThemeisle } from 'react-icons/fa';
 
 class App extends Component {
 
@@ -14,6 +15,8 @@ class App extends Component {
     this.state = {
       myAppointmnents: [],
       formDisplay: false,
+      orderBy: 'aptDate',
+      orderDir: 'asc',
       lastIndex: 0
     };
     this.deleteAppointment = this.deleteAppointment.bind(this);
@@ -61,6 +64,26 @@ addAppointment(apt) {
 }  
 
   render() {
+    
+    let order;
+    let filteredApts = this.state.myAppointmnents;
+    if(this.state.orderDir === 'asc') {
+      order = 1;
+    } else {
+      order = -1;
+    }
+
+    filteredApts.sort((a,b) => {
+      if (a[this.state.orderBy].toLowerCase() < 
+        b[this.state.orderBy].toLowerCase()
+      ) {
+        return -1 * order;
+      } else {
+        return 1 * order;
+      }
+    });
+
+
     return (
       <main className="page bg-white" id="petratings">
         <div className="container">
@@ -73,7 +96,7 @@ addAppointment(apt) {
                   addAppointment = {this.addAppointment}
                 />
                 <SearchAppointments />
-                <ListAppointments appointments={this.state.myAppointmnents}
+                <ListAppointments appointments={filteredApts}
                   deleteAppointment={this.deleteAppointment} />
               </div>
             </div>
