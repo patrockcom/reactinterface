@@ -6,7 +6,6 @@ import SearchAppointments from './SearchAppointments';
 import ListAppointments from './ListAppointments';
 
 import { without } from "lodash";
-import { FaThemeisle } from 'react-icons/fa';
 
 class App extends Component {
 
@@ -15,18 +14,32 @@ class App extends Component {
     this.state = {
       myAppointmnents: [],
       formDisplay: false,
-      orderBy: 'aptDate',
+      orderBy: 'petName',
       orderDir: 'asc',
+      queryText: '', 
       lastIndex: 0
     };
     this.deleteAppointment = this.deleteAppointment.bind(this);
     this.toggleForm = this.toggleForm.bind(this);
     this.addAppointment = this.addAppointment.bind(this);
+    this.changeOrder = this.changeOrder.bind(this);
+    this.searchApts = this.searchApts.bind(this);
   }
 toggleForm() {
   this.setState({
     formDisplay: !this.state.formDisplay
   })
+}
+
+searchApts(query) {
+  this.setState({queryText: query});
+}
+
+changeOrder(order, dir) {
+  this.setState({
+    orderBy: order,
+    orderDir: dir
+  });
 }
 
 addAppointment(apt) {
@@ -73,7 +86,7 @@ addAppointment(apt) {
       order = -1;
     }
 
-    filteredApts.sort((a,b) => {
+    filteredApts = filteredApts.sort((a, b) => {
       if (a[this.state.orderBy].toLowerCase() < 
         b[this.state.orderBy].toLowerCase()
       ) {
@@ -81,6 +94,18 @@ addAppointment(apt) {
       } else {
         return 1 * order;
       }
+    }).filter(eachItem => {
+      return(
+        eachItem['petName']
+      .toLowerCase()
+      .includes(this.state.queryText.toLowerCase()) ||
+      eachItem['ownerName']
+      .toLowerCase()
+      .includes(this.state.queryText.toLowerCase()) ||
+      eachItem['aptNotes']
+      .toLowerCase()
+      .includes(this.state.queryText.toLowerCase())
+      );
     });
 
 
@@ -95,7 +120,12 @@ addAppointment(apt) {
                   toggleForm={this.toggleForm}
                   addAppointment = {this.addAppointment}
                 />
-                <SearchAppointments />
+                <SearchAppointments 
+                  orderBy ={this.state.orderBy}
+                  orderDir={this.state.orderDir}
+                  changeOrder={this.changeOrder}
+                  searchApts={this.searchApts}
+                  />
                 <ListAppointments appointments={filteredApts}
                   deleteAppointment={this.deleteAppointment} />
               </div>
